@@ -29,7 +29,6 @@ async function start() {
   }
 }
 
-
 // passport middleware
 server.use(passport.initialize())
 
@@ -37,7 +36,7 @@ passportConfig(passport)
 
 // API Routes
 server.use('/api/user', user);
-// app.use('/api/news', news);
+server.use('/api/news', news);
 
 
 server.get('*', (req, res) => {

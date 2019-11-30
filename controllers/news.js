@@ -1,42 +1,40 @@
-const mongoose = require('mongoose');
-const NewsModel = require('../models/news');
+const News = require('../models/news');
 
-module.exports.getNews = (req, res, next) => {
-  NewsModel.find({}, (err, news) => {
-    if (err) next(err);
-    res.json({news});
-  })
+module.exports.getNews = (req, res) => {
+  News.find({})
+    .then(news => res.json(news))
+    .catch(({message}) => res.status(404).json(message));
 };
 
-module.exports.newNews = (req, res, next) => {
-  const {theme, label, text, author} = req.body;
-  NewsModel.find({label, theme, author}, (err, news) => {
-      console.log(news);
-    if (err) {
-      next(err);
-    }
-    if (!news.length) {
-      const newNews = new NewsModel({theme, text, label,author})
-        .save()
-        .then(createdNews => {
-            console.log(createdNews)
-          // res.json(createdNews);
-        })
-        .catch(next);
-    } else {
-      next(err);
-    }
-  });
+module.exports.newNews = ({body}, res) => {
+  const {topic, label, text, author} = body;
+  News.find({label, topic, author})
+    .then(news => {
+      if (!news.length) {
+        const newNews = new News({topic, text, label, author});
+        newNews.save()
+          .then(createdNews => res.json(createdNews))
+          .catch(({message}) => res.status(404).json({message}));
+      } else {
+        throw new Error('This news was created');
+      }
+    })
+    .catch(({message}) => res.status(404).json({message}));
 };
-module.exports.updateNews = (req, res, next) => {
-  NewsModel.updateOne({_id: req.params.id}, {upsert: true}, (err) => {
-    if (err) next(err);
-    res.json({...req.body});
-  });
+module.exports.updateNews = ({params, body}, res,) => {
+  const {text, label, topic} = body;
+  const result = {
+    text, label, topic
+  };
+  News.updateOne(
+    {_id: params.id},
+    {...result})
+    .then(() => res.json({...body}))
+    .catch(({message}) => res.status(404).json({message}));
 };
-module.exports.deleteNews = (req, res) => {
-    NewsModel.remove({_id: req.params.id}, {upsert: true}, (err) => {
-        if (err) next(err);
-        res.json({...req.body});
-    });
+
+module.exports.deleteNews = ({params}, res) => {
+  News.deleteOne({_id: params.id})
+    .then(() => res.json({message: 'ok'}))
+    .catch(({message}) => res.status(404).json({message}));
 };
