@@ -57,16 +57,16 @@ module.exports.login = ({body}, res) => {
     .catch(({message}) => res.status(404).json({message}));
 };
 
-module.exports.updateUser = (req, res) => {
+module.exports.updateUser = ({params, body}, res) => {
   User.updateOne(
-    {_id: req.params.id},
-    {...req.body})
-    .then(() => res.json({...req.body}))
+    {_id: params.id},
+    {...body})
+    .then(() => res.json({...body}))
     .catch(({message}) => res.status(404).json({message}));
 };
 
-module.exports.deleteUser = (req, res) => {
-  User.remove({_id: req.params.id})
+module.exports.deleteUser = ({params}, res) => {
+  User.deleteOne({_id: params.id})
     .then(() => res.json({message: 'ok'}))
     .catch(({message}) => res.status(404).json({message}));
 };
@@ -93,7 +93,7 @@ module.exports.getUsers = (req, res) => {
 module.exports.updateUserPermission = (req, res) => {
 };
 
-module.exports.authFromToken = ({body}, res, next) => {
+module.exports.authFromToken = ({body}, res) => {
   const {username: login, password} = body;
   User.findOne({login}).then((user, err) => {
     if (err) {
@@ -122,9 +122,6 @@ module.exports.authFromToken = ({body}, res, next) => {
 //   res.json({message: 'out'});
 // };
 
-const createHash = (password) => bCrypt.hashSync(password, bCrypt.genSaltSync(10), null);
-
-const createToken = (payload) => jwt.encode(payload, config.secret);
 
 const updateImage = (req, user) => {
   user.img = `./images/${req.files.userImage.name}`;

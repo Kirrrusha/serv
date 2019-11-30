@@ -2,7 +2,7 @@ let mongoose = require('mongoose');
 let Schema = mongoose.Schema;
 
 const NewsSchema = new Schema({
-    theme: {
+    topic: {
       type: String,
       required: [
         true, 'Enter new\'s topic'
@@ -31,4 +31,4 @@ const NewsSchema = new Schema({
 
 const news = mongoose.model('news', NewsSchema);
 
-exports.default = ({news});
+module.exports  = news;
