@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 
 const UserSchema = new Schema({
-  login: {
+  username: {
     type: String,
     required: [true, 'Enter login']
   },
@@ -17,10 +17,15 @@ const UserSchema = new Schema({
   },
   surname: String,
   name: String,
-  patronymic: String,
+  middleName: String,
   img: {
     type: String,
     default: './images/default.png'
+  },
+  role: {
+    type: String,
+    default: 'basic',
+    enum: ["basic", "supervisor", "admin"]
   }
 }, {
   timestamps: {
@@ -31,4 +36,4 @@ const UserSchema = new Schema({
 
 const user = mongoose.model('users', UserSchema);
 
-module.exports = user ;
+module.exports = user;
