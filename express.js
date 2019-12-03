@@ -69,6 +69,7 @@ io.sockets.on('connection', socket => {
     users[socket.id] = {};
     // присвоем ему его имя или по умолчанию Гость
     users[socket.id].name = username || 'Guest';
+    users[socket.id].id = socket.id;
 
     let newUsers = updateUsers();
       // сообщаем пользователю список пользователей в комнате
