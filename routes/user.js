@@ -17,10 +17,10 @@ router.post('/saveNewUser', ctrlUser.saveNewUser);
 
 router.put('/updateUser/:id', auth, ctrlUser.updateUser);
 
-router.delete('/deleteUser/:id', auth, ctrlUser.deleteUser);
+router.delete('/deleteUser/:id', auth, ctrlUser.grantAccess('deleteOwn', 'profile'), ctrlUser.deleteUser);
 
 router.post('/saveUserImage/:id', auth, ctrlUser.saveUserImage);
 
-router.get('/getUsers', auth, ctrlUser.getUsers);
+router.get('/getUsers', auth, ctrlUser.grantAccess('readAny', 'profile'), ctrlUser.getUsers);
 
 module.exports = router;
