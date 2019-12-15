@@ -7,6 +7,7 @@ exports.validateRegisterInput = data => {
     'username',
     'email',
     'password',
+    'replacePassword',
     'surname',
     'name',
     'middleName',
@@ -44,15 +45,15 @@ exports.validateRegisterInput = data => {
   
   if (
     !validator.isLength(password, {
-      min: 6,
+      min: 5,
       max: 12
     })
   )
-    errors.password = 'password must be between 6 and 12 characters';
+    errors.password = 'password must be between 5 and 12 characters';
 
   if (
     !validator.isLength(replacePassword, {
-      min: 6,
+      min: 5,
       max: 12
     })
   )

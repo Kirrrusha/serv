@@ -11,7 +11,7 @@ router.post('/authFromToken', ctrlUser.authFromToken);
 
 router.post('/login', ctrlUser.login);
 
-router.post('/saveNewUser', ctrlUser.saveNewUser);
+router.post('/registration', ctrlUser.registration);
 
 // router.post('/logOut', auth, ctrlUser.logOut);
 
