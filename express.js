@@ -11,6 +11,7 @@ const fileUpload = require('express-fileupload');
 const RateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const cors = require('cors');
+const logger = require('./lib/logger');
 
 const PORT = process.env.PORT || 8080;
 
@@ -59,6 +60,12 @@ server.use(cors({
     return callback(null, true);
   }
 }));
+
+// HTTP request logger
+if (process.env.NODE_ENV !== 'production') {
+  server.use(logger.devLogger);
+}
+server.use(logger.errorLogger);
 
 passportConfig(passport);
 
