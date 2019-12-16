@@ -4,27 +4,28 @@ const passportConfig = require('./config/passport');
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const passport = require("passport");
-const user = require("./routes/user");
-const news = require("./routes/news");
-const fileUpload = require("express-fileupload");
-const RateLimit = require("express-rate-limit");
+const passport = require('passport');
+const user = require('./routes/user');
+const news = require('./routes/news');
+const fileUpload = require('express-fileupload');
+const RateLimit = require('express-rate-limit');
+const helmet = require('helmet');
+const cors = require('cors');
 
 const PORT = process.env.PORT || 8080;
 
 const server = express();
 
-server.use(express.json({limit: "300kb"})); // body-parser defaults to a body size limit of 100kb
+server.use(helmet());
+
+server.use(express.json({limit: '300kb'})); // body-parser defaults to a body size limit of 100kb
 
 server.use(fileUpload({
-  createParentPath: true,
-  // limits: {
-  //   fileSize: 50 * 1024
-  // }
+  createParentPath: true
 }));
 server.use(bodyParser.urlencoded({extended: false}));
 server.use(bodyParser.json());
-server.enable("trust proxy");
+server.enable('trust proxy');
 const {mongoURI: db} = keys;
 
 let app;
@@ -46,6 +47,19 @@ async function start() {
 // passport middleware
 server.use(passport.initialize());
 
+// cors
+const allowedOrigins = ['http://localhost:3000'];
+server.use(cors({
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = `The CORS policy for this site does not allow access from the specified Origin.`;
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  }
+}));
+
 passportConfig(passport);
 
 const apiLimiter = new RateLimit({
@@ -54,7 +68,7 @@ const apiLimiter = new RateLimit({
 });
 
 // API Routes
-server.use("/api/user", apiLimiter, user);
+server.use('/api/user', apiLimiter, user);
 server.use("/api/news", news);
 
 server.get("*", (req, res) => {
